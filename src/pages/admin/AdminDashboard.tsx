@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -191,55 +191,57 @@ const AdminDashboard = () => {
             </Tabs>
           </CardHeader>
           <CardContent>
-            <TabsContent value="faculty" className="mt-0">
-              <div className="border rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-blue-100 text-blue-900">
-                    <tr>
-                      <th className="px-4 py-3 text-left">Name</th>
-                      <th className="px-4 py-3 text-left">Department</th>
-                      <th className="px-4 py-3 text-left">Specialization</th>
-                      <th className="px-4 py-3 text-left">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {allFaculty.map((faculty, index) => (
-                      <tr 
-                        key={faculty.id}
-                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                      >
-                        <td className="px-4 py-3 border-t">{faculty.name}</td>
-                        <td className="px-4 py-3 border-t">{faculty.department}</td>
-                        <td className="px-4 py-3 border-t">{faculty.specialization}</td>
-                        <td className="px-4 py-3 border-t">
-                          {mockFaculty.some(f => f.id === faculty.id) ? (
-                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Default</Badge>
-                          ) : (
-                            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">New Registration</Badge>
-                          )}
-                        </td>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsContent value="faculty" className="mt-0">
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-blue-100 text-blue-900">
+                      <tr>
+                        <th className="px-4 py-3 text-left">Name</th>
+                        <th className="px-4 py-3 text-left">Department</th>
+                        <th className="px-4 py-3 text-left">Specialization</th>
+                        <th className="px-4 py-3 text-left">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="departments" className="mt-0">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {Object.entries(deptStats).map(([dept, count]) => (
-                  <Card key={dept} className="bg-gray-50">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm text-gray-600">{dept}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-2xl font-bold text-blue-700">{count}</p>
-                      <p className="text-xs text-gray-500">Faculty members</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
+                    </thead>
+                    <tbody>
+                      {allFaculty.map((faculty, index) => (
+                        <tr 
+                          key={faculty.id}
+                          className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                        >
+                          <td className="px-4 py-3 border-t">{faculty.name}</td>
+                          <td className="px-4 py-3 border-t">{faculty.department}</td>
+                          <td className="px-4 py-3 border-t">{faculty.specialization}</td>
+                          <td className="px-4 py-3 border-t">
+                            {mockFaculty.some(f => f.id === faculty.id) ? (
+                              <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Default</Badge>
+                            ) : (
+                              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">New Registration</Badge>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="departments" className="mt-0">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {Object.entries(deptStats).map(([dept, count]) => (
+                    <Card key={dept} className="bg-gray-50">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-600">{dept}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold text-blue-700">{count}</p>
+                        <p className="text-xs text-gray-500">Faculty members</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
