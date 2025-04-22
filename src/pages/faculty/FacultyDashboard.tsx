@@ -135,7 +135,22 @@ const FacultyDashboard = () => {
     });
   };
 
-  // Group timetable entries by day
+  const isHoliday = (day: string) => {
+    const holidays = JSON.parse(localStorage.getItem("holidays") || "[]");
+    return holidays.some((holiday: { date: string }) => {
+      const holidayDate = new Date(holiday.date);
+      return holidayDate.toLocaleDateString('en-US', { weekday: 'long' }) === day;
+    });
+  };
+
+  const getHolidayOccasion = (day: string) => {
+    const holidays = JSON.parse(localStorage.getItem("holidays") || "[]");
+    const holiday = holidays.find((h: { date: string }) => 
+      new Date(h.date).toLocaleDateString('en-US', { weekday: 'long' }) === day
+    );
+    return holiday?.occasion || '';
+  };
+
   const timetableByDay = timetable.reduce((acc, entry) => {
     if (!acc[entry.day]) {
       acc[entry.day] = [];
@@ -144,7 +159,6 @@ const FacultyDashboard = () => {
     return acc;
   }, {});
 
-  // Sort days in correct order
   const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const sortedDays = Object.keys(timetableByDay).sort(
     (a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)
@@ -270,19 +284,33 @@ const FacultyDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {timetableByDay[day]
-                          .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
-                          .map((entry, index) => (
-                            <tr 
-                              key={`${day}-${index}`}
-                              className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                            >
-                              <td className="px-4 py-3 border-t">{entry.timeSlot}</td>
-                              <td className="px-4 py-3 border-t font-medium">{entry.subject}</td>
-                              <td className="px-4 py-3 border-t">{entry.class}</td>
-                              <td className="px-4 py-3 border-t">{entry.room}</td>
-                            </tr>
-                          ))}
+                        {timetableByDay[day]?.length > 0 ? (
+                          timetableByDay[day]
+                            .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
+                            .map((entry, index) => (
+                              <tr 
+                                key={`${day}-${index}`}
+                                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                              >
+                                <td className="px-4 py-3 border-t">{entry.timeSlot}</td>
+                                <td className="px-4 py-3 border-t font-medium">{entry.subject}</td>
+                                <td className="px-4 py-3 border-t">{entry.class}</td>
+                                <td className="px-4 py-3 border-t">{entry.room}</td>
+                              </tr>
+                            ))
+                        ) : (
+                          <tr>
+                            <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                              {isHoliday(day) ? (
+                                <div className="flex flex-col items-center gap-2">
+                                  <span className="font-medium text-amber-600">Holiday: {getHolidayOccasion(day)}</span>
+                                </div>
+                              ) : (
+                                "No classes scheduled"
+                              )}
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>

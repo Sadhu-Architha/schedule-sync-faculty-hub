@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MessageSquare } from "lucide-react";
 import { mockFaculty, initializeMockTimetables, initializeMessageSystem } from "@/utils/mockData";
 import AddFacultyDialog from "@/components/admin/AddFacultyDialog";
+import HolidayDialog from "@/components/admin/HolidayDialog";
 
 const User = ({ className }: { className?: string }): JSX.Element => {
   return (
@@ -137,7 +138,7 @@ const AdminDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Button 
                 onClick={handleViewTimetables}
                 className="h-auto py-6 px-4 flex flex-col items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200"
@@ -163,6 +164,8 @@ const AdminDashboard = () => {
                   </p>
                 </div>
               </Button>
+              
+              <HolidayDialog />
               
               <Button 
                 className="h-auto py-6 px-4 flex flex-col items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200"

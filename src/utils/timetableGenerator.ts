@@ -100,10 +100,17 @@ export const generateFacultySchedule = (faculty) => {
 
   let classCount = 0;
   while (classCount < 9) {
+    // Get current holidays
+    const holidays = JSON.parse(localStorage.getItem("holidays") || "[]");
+    
     // Find days with fewer than 2 classes, excluding holidays
-    const availableDays = daysOfWeek.filter(day => 
-      classesPerDay[day] < 2 && !holidays.includes(day)
-    );
+    const availableDays = daysOfWeek.filter(day => {
+      const isHoliday = holidays.some(holiday => {
+        const holidayDate = new Date(holiday.date);
+        return holidayDate.toLocaleDateString('en-US', { weekday: 'long' }) === day;
+      });
+      return classesPerDay[day] < 2 && !isHoliday;
+    });
     
     if (availableDays.length === 0) {
       daysOfWeek.forEach(day => {
