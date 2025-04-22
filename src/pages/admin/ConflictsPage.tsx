@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -55,22 +54,17 @@ const ConflictsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load registered faculty from localStorage
     const storedUsers = localStorage.getItem("registeredUsers");
     const registeredFaculty = storedUsers ? JSON.parse(storedUsers) : [];
     
-    // Combine with mock faculty
     const faculty = [...mockFaculty, ...registeredFaculty];
     setAllFaculty(faculty);
     
-    // Load timetables
     const facultyTimetables = JSON.parse(localStorage.getItem("facultyTimetables") || "{}");
     
-    // Check for conflicts
     const detectedConflicts = checkScheduleConflicts(facultyTimetables);
     setConflicts(detectedConflicts);
     
-    // Calculate workload statistics
     const stats = calculateWorkloadStats(faculty, facultyTimetables);
     setWorkloadStats(stats);
     
@@ -81,13 +75,11 @@ const ConflictsPage = () => {
     const stats: Record<string, FacultyStats> = {};
     const totalFaculty = faculty.length;
     
-    // Classes per day statistics
     const classesPerDay = {};
     
     faculty.forEach(f => {
       const facultyTimetable = timetables[f.id] || [];
       
-      // Count total classes
       stats[f.id] = {
         name: f.name,
         department: f.department,
@@ -98,7 +90,6 @@ const ConflictsPage = () => {
         balanceScore: 0
       };
       
-      // Group by day
       const daysCounts = facultyTimetable.reduce<Record<string, number>>((acc, entry) => {
         if (!acc[entry.day]) {
           acc[entry.day] = 0;
@@ -109,7 +100,6 @@ const ConflictsPage = () => {
       
       stats[f.id].dayDistribution = daysCounts;
       
-      // Calculate max classes per day
       const maxClassesInADay = Object.values(daysCounts).reduce<number>(
         (max, count) => Math.max(max, count), 0
       );
@@ -121,27 +111,21 @@ const ConflictsPage = () => {
     return stats;
   };
 
-  // Calculate balance score (0-100) where 100 is perfectly balanced
   const calculateBalanceScore = (dayDistribution: Record<string, number>): number => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const counts = days.map(day => dayDistribution[day] || 0);
     
-    // If no classes, return 0
     if (counts.every(count => count === 0)) return 0;
     
     const total = counts.reduce((sum, count) => sum + count, 0);
-    const ideal = total / days.length; // Ideal distribution
+    const ideal = total / days.length;
     
-    // Calculate variance from ideal
     const variance = counts.reduce(
       (sum, count) => sum + Math.pow(count - ideal, 2), 0
     ) / days.length;
     
-    // Convert to score where lower variance = higher score
-    // Max possible variance would be all classes on one day
     const maxVariance = Math.pow(total - ideal, 2) / days.length;
     
-    // Normalize to 0-100 scale
     const score = 100 * (1 - (variance / maxVariance));
     
     return Math.round(score);
@@ -149,6 +133,27 @@ const ConflictsPage = () => {
 
   const handleBack = () => {
     navigate("/admin/dashboard");
+  };
+
+  const handleAutoResolveConflicts = () => {
+    const facultyTimetables = JSON.parse(localStorage.getItem("facultyTimetables") || "{}");
+    const resolvedTimetables = autoResolveConflicts(facultyTimetables);
+    
+    localStorage.setItem("facultyTimetables", JSON.stringify(resolvedTimetables));
+    
+    const remainingConflicts = checkScheduleConflicts(resolvedTimetables);
+    setConflicts(remainingConflicts);
+    
+    const stats = calculateWorkloadStats(allFaculty, resolvedTimetables);
+    setWorkloadStats(stats);
+    
+    toast({
+      title: remainingConflicts.length === 0 ? "All conflicts resolved!" : "Some conflicts remain",
+      description: remainingConflicts.length === 0 
+        ? "The timetable has been updated successfully."
+        : "Manual intervention may be needed for remaining conflicts.",
+      variant: remainingConflicts.length === 0 ? "default" : "destructive",
+    });
   };
 
   const handleFixConflicts = () => {
@@ -196,10 +201,23 @@ const ConflictsPage = () => {
         <div className="grid grid-cols-1 gap-6 mb-6">
           <Card className="shadow-md">
             <CardHeader className="bg-blue-50">
-              <CardTitle className="text-lg">Schedule Conflicts</CardTitle>
-              <CardDescription>
-                Detected issues in faculty timetables
-              </CardDescription>
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-lg">Schedule Conflicts</CardTitle>
+                  <CardDescription>
+                    Detected issues in faculty timetables
+                  </CardDescription>
+                </div>
+                {conflicts.length > 0 && (
+                  <Button 
+                    onClick={handleAutoResolveConflicts}
+                    variant="default"
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Auto-resolve Conflicts
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="pt-6">
               {isLoading ? (

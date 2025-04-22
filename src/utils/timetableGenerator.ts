@@ -61,33 +61,108 @@ const generateScheduleEntry = (faculty, usedSlots) => {
   };
 };
 
-// Generate faculty schedule - 9 classes per week
+// Generate faculty schedule - 9 classes per week with better distribution
 export const generateFacultySchedule = (faculty) => {
   const schedule = [];
   const usedSlots = {};
+  const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const maxClassesPerDay = 2; // Maximum classes per day
+  const dayClassCount = {};
   
-  // Generate 9 unique schedule entries
-  for (let i = 0; i < 9; i++) {
-    const entry = generateScheduleEntry(faculty, usedSlots);
-    schedule.push(entry);
+  daysOrder.forEach(day => {
+    dayClassCount[day] = 0;
+  });
+
+  // Try to distribute 9 classes evenly across the week
+  while (schedule.length < 9) {
+    // Find days with fewer classes
+    const availableDays = daysOrder.filter(day => dayClassCount[day] < maxClassesPerDay);
+    
+    if (availableDays.length === 0) {
+      // Reset counts if we can't fit all classes with current distribution
+      daysOrder.forEach(day => {
+        dayClassCount[day] = 0;
+      });
+      continue;
+    }
+    
+    const day = availableDays[Math.floor(Math.random() * availableDays.length)];
+    const availableTimeSlots = timeSlots.filter(timeSlot => !usedSlots[`${day}-${timeSlot}`]);
+    
+    if (availableTimeSlots.length === 0) continue;
+    
+    const timeSlot = availableTimeSlots[Math.floor(Math.random() * availableTimeSlots.length)];
+    const subjects = getSubjectsForDepartment(faculty.department);
+    const subject = subjects[Math.floor(Math.random() * subjects.length)];
+    
+    usedSlots[`${day}-${timeSlot}`] = true;
+    dayClassCount[day]++;
+    
+    schedule.push({
+      day,
+      timeSlot,
+      subject,
+      room: generateRoom(),
+      class: `${faculty.department.substring(0, 3).toUpperCase()}-${Math.floor(Math.random() * 4) + 1}${String.fromCharCode(65 + Math.floor(Math.random() * 3))}`
+    });
   }
   
-  return schedule;
+  // Sort schedule by day and time
+  return schedule.sort((a, b) => {
+    const dayDiff = daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+    if (dayDiff !== 0) return dayDiff;
+    return sortTimeSlots([a.timeSlot, b.timeSlot]).indexOf(a.timeSlot) - 
+           sortTimeSlots([a.timeSlot, b.timeSlot]).indexOf(b.timeSlot);
+  });
 };
 
-// Regenerate a single faculty's timetable
-export const regenerateFacultyTimetable = (faculty) => {
-  return generateFacultySchedule(faculty);
-};
+// Auto-resolve conflicts by reassigning time slots and rooms
+export const autoResolveConflicts = (allTimetables) => {
+  const conflicts = checkScheduleConflicts(allTimetables);
+  if (conflicts.length === 0) return allTimetables;
 
-interface Conflict {
-  type: string;
-  detail: string;
-  facultyIds: string[];
-  day: string;
-  timeSlot: string;
-  room: string;
-}
+  const resolvedTimetables = { ...allTimetables };
+
+  conflicts.forEach(conflict => {
+    const [facultyId1, facultyId2] = conflict.facultyIds;
+    const faculty1Schedule = resolvedTimetables[facultyId1];
+    const faculty2Schedule = resolvedTimetables[facultyId2];
+
+    // Find the conflicting entries
+    const entry1Index = faculty1Schedule.findIndex(
+      entry => entry.day === conflict.day && entry.timeSlot === conflict.timeSlot
+    );
+    
+    // Try to find a new time slot for the second faculty
+    const usedSlots = new Set();
+    faculty2Schedule.forEach(entry => usedSlots.add(`${entry.day}-${entry.timeSlot}`));
+    
+    // Find available slot
+    let newSlot = null;
+    for (const day of daysOfWeek) {
+      for (const time of timeSlots) {
+        const slotKey = `${day}-${time}`;
+        if (!usedSlots.has(slotKey)) {
+          newSlot = { day, timeSlot: time };
+          break;
+        }
+      }
+      if (newSlot) break;
+    }
+
+    if (newSlot) {
+      // Update the conflicting entry with new time slot
+      faculty2Schedule[entry1Index] = {
+        ...faculty2Schedule[entry1Index],
+        day: newSlot.day,
+        timeSlot: newSlot.timeSlot,
+        room: generateRoom() // Generate a new room to avoid potential room conflicts
+      };
+    }
+  });
+
+  return resolvedTimetables;
+};
 
 // Check for schedule conflicts in faculty timetables
 export const checkScheduleConflicts = (allTimetables: Record<string, any[]>) => {
@@ -117,4 +192,18 @@ export const checkScheduleConflicts = (allTimetables: Record<string, any[]>) => 
   });
   
   return conflicts;
+};
+
+// Sort time slots in chronological order
+const sortTimeSlots = (slots: string[]) => {
+  return slots.sort((a, b) => {
+    const timeA = new Date(`2000/01/01 ${a.split(' - ')[0]}`);
+    const timeB = new Date(`2000/01/01 ${b.split(' - ')[0]}`);
+    return timeA.getTime() - timeB.getTime();
+  });
+};
+
+// Regenerate a single faculty's timetable
+export const regenerateFacultyTimetable = (faculty) => {
+  return generateFacultySchedule(faculty);
 };
