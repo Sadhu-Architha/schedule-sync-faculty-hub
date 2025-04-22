@@ -69,51 +69,67 @@ export const subjectsByDepartment = {
 export const mockFaculty = [
   {
     id: "faculty-1",
-    name: "Dr. Rajesh Kumar",
-    email: "rajesh.kumar@university.edu",
+    name: "Dr. Shilpa",
+    email: "shilpa@university.edu",
     role: "faculty",
     department: "Computer Science",
     specialization: "Artificial Intelligence"
   },
   {
     id: "faculty-2",
-    name: "Dr. Priya Sharma",
-    email: "priya.sharma@university.edu",
+    name: "Dr. Ravali",
+    email: "ravali@university.edu",
     role: "faculty",
     department: "Electrical Engineering",
     specialization: "Power Systems"
   },
   {
     id: "faculty-3",
-    name: "Dr. Amit Patel",
-    email: "amit.patel@university.edu",
+    name: "Dr. Vanshika",
+    email: "vanshika@university.edu",
     role: "faculty",
     department: "Electronics",
     specialization: "VLSI Design"
   },
   {
     id: "faculty-4",
-    name: "Dr. Meera Gupta",
-    email: "meera.gupta@university.edu",
+    name: "Dr. Mounika",
+    email: "mounika@university.edu",
     role: "faculty",
     department: "Civil Engineering",
     specialization: "Structural Engineering"
   },
   {
     id: "faculty-5",
-    name: "Dr. Suresh Verma",
-    email: "suresh.verma@university.edu",
+    name: "Dr. Shiva Sri",
+    email: "shivasri@university.edu",
     role: "faculty",
     department: "Mechanical Engineering",
     specialization: "Thermodynamics"
   },
   {
     id: "faculty-6",
-    name: "Dr. Anita Desai",
-    email: "anita.desai@university.edu",
+    name: "Dr. Vigna",
+    email: "vigna@university.edu",
     role: "faculty",
     department: "Information Technology",
     specialization: "Cybersecurity"
+  },
+  {
+    id: "faculty-7",
+    name: "Dr. Divya",
+    email: "divya@university.edu",
+    role: "faculty",
+    department: "Computer Science",
+    specialization: "Database Systems"
+  },
+  {
+    id: "faculty-8",
+    name: "Dr. Hima Varsha",
+    email: "himavarsha@university.edu",
+    role: "faculty",
+    department: "Information Technology",
+    specialization: "Cloud Computing"
   }
 ];
 
@@ -135,7 +151,7 @@ export const initializeMessageSystem = () => {
       {
         id: "msg-1",
         from: "faculty-2",
-        fromName: "Dr. Priya Sharma",
+        fromName: "Dr. Ravali",
         subject: "Schedule Conflict on Thursday",
         message: "I have a research meeting during my Thursday 2:00 PM class. Can we reschedule?",
         timestamp: new Date(Date.now() - 86400000).toISOString(),
@@ -144,7 +160,7 @@ export const initializeMessageSystem = () => {
       {
         id: "msg-2",
         from: "faculty-4", 
-        fromName: "Dr. Meera Gupta",
+        fromName: "Dr. Mounika",
         subject: "Request for Lab Session",
         message: "I need a lab for my Surveying class on Mondays. Is there availability?",
         timestamp: new Date(Date.now() - 186400000).toISOString(),

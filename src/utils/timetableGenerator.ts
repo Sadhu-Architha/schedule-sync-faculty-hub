@@ -14,6 +14,23 @@ const timeSlots = [
 // Days of the week including Saturday
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+// Holiday management
+let holidays: string[] = [];
+
+export const setHolidays = (newHolidays: string[]) => {
+  holidays = newHolidays;
+};
+
+export const getHolidays = () => {
+  return holidays;
+};
+
+// Calculate total hours for a faculty's schedule
+export const calculateTotalHours = (schedule: any[]) => {
+  // Each class is 1 hour
+  return schedule.length;
+};
+
 // Room types
 const roomTypes = ["Lecture Hall", "Lab", "Classroom", "Seminar Room"];
 const buildings = ["A", "B", "C", "D"];
@@ -81,30 +98,24 @@ export const generateFacultySchedule = (faculty) => {
     classesPerDay[day] = 0;
   });
 
-  // First, sort all possible day-time combinations
-  const allPossibleSlots = [];
-  daysOfWeek.forEach(day => {
-    timeSlots.forEach(timeSlot => {
-      allPossibleSlots.push({ day, timeSlot });
-    });
-  });
-
-  // Distribute 9 classes across the week
   let classCount = 0;
   while (classCount < 9) {
-    // Find days with fewer than 2 classes
-    const availableDays = daysOfWeek.filter(day => classesPerDay[day] < 2);
+    // Find days with fewer than 2 classes, excluding holidays
+    const availableDays = daysOfWeek.filter(day => 
+      classesPerDay[day] < 2 && !holidays.includes(day)
+    );
     
     if (availableDays.length === 0) {
-      // Reset if we can't distribute evenly
       daysOfWeek.forEach(day => {
         classesPerDay[day] = 0;
       });
       continue;
     }
     
-    const day = availableDays[0]; // Take first available day for sequential filling
-    const availableTimeSlots = timeSlots.filter(timeSlot => !usedSlots[`${day}-${timeSlot}`]);
+    const day = availableDays[0];
+    const availableTimeSlots = timeSlots.filter(
+      timeSlot => !usedSlots[`${day}-${timeSlot}`]
+    );
     
     if (availableTimeSlots.length === 0) continue;
     

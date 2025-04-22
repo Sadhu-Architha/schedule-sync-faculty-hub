@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
@@ -9,12 +8,14 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { Calendar, MessageSquare, Printer } from "lucide-react";
+import { calculateTotalHours } from "@/utils/timetableGenerator";
 
 const FacultyDashboard = () => {
   const { user } = useAuth();
   const [timetable, setTimetable] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [messageText, setMessageText] = useState("");
+  const totalHours = calculateTotalHours(timetable);
 
   useEffect(() => {
     if (user) {
@@ -214,11 +215,11 @@ const FacultyDashboard = () => {
           <CardHeader className="bg-blue-50">
             <CardTitle>Faculty Information</CardTitle>
             <CardDescription>
-              Your teaching profile and specialization
+              Your teaching profile and workload
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <h4 className="text-sm font-medium text-gray-500">Name</h4>
                 <p className="text-lg font-medium">{user?.name}</p>
@@ -230,6 +231,10 @@ const FacultyDashboard = () => {
               <div>
                 <h4 className="text-sm font-medium text-gray-500">Specialization</h4>
                 <p className="text-lg font-medium">{user?.specialization}</p>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-500">Total Hours/Week</h4>
+                <p className="text-lg font-medium">{totalHours} hours</p>
               </div>
             </div>
           </CardContent>
