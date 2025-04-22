@@ -3,7 +3,7 @@ import { subjectsByDepartment } from "./mockData";
 // Time slots for scheduling classes
 const timeSlots = [
   "9:00 AM - 10:00 AM",
-  "10:00 AM - 11:00 AM",
+  "10:00 AM - 11:00 AM", 
   "11:00 AM - 12:00 PM",
   "12:00 PM - 1:00 PM",
   "2:00 PM - 3:00 PM",
@@ -74,38 +74,47 @@ const generateScheduleEntry = (faculty, usedSlots) => {
 export const generateFacultySchedule = (faculty) => {
   const schedule = [];
   const usedSlots = {};
-  const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const maxClassesPerDay = 2; // Maximum classes per day
-  const dayClassCount = {};
+  const classesPerDay = {};
   
-  daysOrder.forEach(day => {
-    dayClassCount[day] = 0;
+  // Initialize classes per day counter
+  daysOfWeek.forEach(day => {
+    classesPerDay[day] = 0;
   });
 
-  // Try to distribute 9 classes evenly across the week
-  while (schedule.length < 9) {
-    // Find days with fewer classes
-    const availableDays = daysOrder.filter(day => dayClassCount[day] < maxClassesPerDay);
+  // First, sort all possible day-time combinations
+  const allPossibleSlots = [];
+  daysOfWeek.forEach(day => {
+    timeSlots.forEach(timeSlot => {
+      allPossibleSlots.push({ day, timeSlot });
+    });
+  });
+
+  // Distribute 9 classes across the week
+  let classCount = 0;
+  while (classCount < 9) {
+    // Find days with fewer than 2 classes
+    const availableDays = daysOfWeek.filter(day => classesPerDay[day] < 2);
     
     if (availableDays.length === 0) {
-      // Reset counts if we can't fit all classes with current distribution
-      daysOrder.forEach(day => {
-        dayClassCount[day] = 0;
+      // Reset if we can't distribute evenly
+      daysOfWeek.forEach(day => {
+        classesPerDay[day] = 0;
       });
       continue;
     }
     
-    const day = availableDays[Math.floor(Math.random() * availableDays.length)];
+    const day = availableDays[0]; // Take first available day for sequential filling
     const availableTimeSlots = timeSlots.filter(timeSlot => !usedSlots[`${day}-${timeSlot}`]);
     
     if (availableTimeSlots.length === 0) continue;
     
-    const timeSlot = availableTimeSlots[Math.floor(Math.random() * availableTimeSlots.length)];
+    const timeSlot = availableTimeSlots[0]; // Take first available time slot
     const subjects = getSubjectsForDepartment(faculty.department);
     const subject = subjects[Math.floor(Math.random() * subjects.length)];
     
     usedSlots[`${day}-${timeSlot}`] = true;
-    dayClassCount[day]++;
+    classesPerDay[day]++;
+    classCount++;
     
     schedule.push({
       day,
@@ -116,12 +125,11 @@ export const generateFacultySchedule = (faculty) => {
     });
   }
   
-  // Sort schedule by day and time
+  // Sort schedule properly by day order and time
   return schedule.sort((a, b) => {
-    const dayDiff = daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+    const dayDiff = daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
     if (dayDiff !== 0) return dayDiff;
-    return sortTimeSlots([a.timeSlot, b.timeSlot]).indexOf(a.timeSlot) - 
-           sortTimeSlots([a.timeSlot, b.timeSlot]).indexOf(b.timeSlot);
+    return timeSlots.indexOf(a.timeSlot) - timeSlots.indexOf(b.timeSlot);
   });
 };
 

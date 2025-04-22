@@ -1,4 +1,3 @@
-
 import { generateFacultySchedule } from "./timetableGenerator";
 
 // Subject data by department
@@ -136,7 +135,7 @@ export const initializeMessageSystem = () => {
       {
         id: "msg-1",
         from: "faculty-2",
-        fromName: "Dr. Emily Johnson",
+        fromName: "Dr. Priya Sharma",
         subject: "Schedule Conflict on Thursday",
         message: "I have a research meeting during my Thursday 2:00 PM class. Can we reschedule?",
         timestamp: new Date(Date.now() - 86400000).toISOString(),
@@ -145,7 +144,7 @@ export const initializeMessageSystem = () => {
       {
         id: "msg-2",
         from: "faculty-4", 
-        fromName: "Dr. Sarah Williams",
+        fromName: "Dr. Meera Gupta",
         subject: "Request for Lab Session",
         message: "I need a lab for my Surveying class on Mondays. Is there availability?",
         timestamp: new Date(Date.now() - 186400000).toISOString(),
