@@ -37,7 +37,6 @@ const FacultyDashboard = () => {
       return;
     }
     
-    // Create print content
     const printContent = `
       <!DOCTYPE html>
       <html>
@@ -105,11 +104,9 @@ const FacultyDashboard = () => {
       return;
     }
 
-    // Get existing messages from localStorage
     const messageSystem = JSON.parse(localStorage.getItem("messageSystem") || "{}");
     const messages = messageSystem.messages || [];
     
-    // Add new message
     const newMessage = {
       id: `msg-${Date.now()}`,
       from: user?.id,
@@ -120,13 +117,11 @@ const FacultyDashboard = () => {
       read: false
     };
     
-    // Save updated messages to localStorage
     localStorage.setItem("messageSystem", JSON.stringify({
       ...messageSystem,
       messages: [...messages, newMessage]
     }));
     
-    // Clear message text and show success toast
     setMessageText("");
     
     toast({
@@ -160,9 +155,7 @@ const FacultyDashboard = () => {
   }, {});
 
   const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const sortedDays = Object.keys(timetableByDay).sort(
-    (a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b)
-  );
+  const sortedDays = dayOrder.map(day => day);
 
   if (isLoading) {
     return (
@@ -284,7 +277,7 @@ const FacultyDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {timetableByDay[day]?.length > 0 ? (
+                        {(timetableByDay[day]?.length > 0) ? (
                           timetableByDay[day]
                             .sort((a, b) => a.timeSlot.localeCompare(b.timeSlot))
                             .map((entry, index) => (
