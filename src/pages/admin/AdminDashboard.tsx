@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MessageSquare } from "lucide-react";
 import { mockFaculty, initializeMockTimetables, initializeMessageSystem } from "@/utils/mockData";
+import AddFacultyDialog from "@/components/admin/AddFacultyDialog";
 
 const User = ({ className }: { className?: string }): JSX.Element => {
   return (
@@ -65,6 +66,12 @@ const AdminDashboard = () => {
 
   const handleViewMessages = () => {
     navigate("/admin/messages");
+  };
+
+  const refreshFacultyList = () => {
+    const storedUsers = localStorage.getItem("registeredUsers");
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
+    setRegisteredFaculty(users);
   };
 
   const allFaculty = [...mockFaculty, ...registeredFaculty];
@@ -174,13 +181,14 @@ const AdminDashboard = () => {
         </Card>
 
         <Card className="shadow-md">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
               <TabsList>
                 <TabsTrigger value="faculty">Faculty Directory</TabsTrigger>
                 <TabsTrigger value="departments">Department Stats</TabsTrigger>
               </TabsList>
             </Tabs>
+            <AddFacultyDialog onFacultyAdded={refreshFacultyList} />
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>

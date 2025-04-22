@@ -19,6 +19,15 @@ const roomTypes = ["Lecture Hall", "Lab", "Classroom", "Seminar Room"];
 const buildings = ["A", "B", "C", "D"];
 const floors = [1, 2, 3];
 
+interface Conflict {
+  type: 'room';
+  detail: string;
+  facultyIds: string[];
+  day: string;
+  timeSlot: string;
+  room: string;
+}
+
 // Generate a random room
 const generateRoom = () => {
   const building = buildings[Math.floor(Math.random() * buildings.length)];
@@ -117,7 +126,7 @@ export const generateFacultySchedule = (faculty) => {
 };
 
 // Auto-resolve conflicts by reassigning time slots and rooms
-export const autoResolveConflicts = (allTimetables) => {
+export const autoResolveConflicts = (allTimetables: Record<string, any[]>) => {
   const conflicts = checkScheduleConflicts(allTimetables);
   if (conflicts.length === 0) return allTimetables;
 
