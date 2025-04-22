@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MessageSquare } from "lucide-react";
 import { mockFaculty, initializeMockTimetables, initializeMessageSystem } from "@/utils/mockData";
 import AddFacultyDialog from "@/components/admin/AddFacultyDialog";
-import HolidayDialog from "@/components/admin/HolidayDialog";
+import { HolidayDialog } from "@/components/admin/HolidayDialog";
 
 const User = ({ className }: { className?: string }): JSX.Element => {
   return (
