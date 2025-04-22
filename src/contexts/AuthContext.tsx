@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { generateFacultySchedule } from "@/utils/timetableGenerator";
+import { mockFaculty, initializeMockTimetables } from "@/utils/mockData";
 
 type UserRole = "admin" | "faculty";
 
@@ -48,6 +49,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Initialize mock data
+  useEffect(() => {
+    // Initialize registered users if they don't exist
+    if (!localStorage.getItem("registeredUsers")) {
+      localStorage.setItem("registeredUsers", JSON.stringify(mockFaculty));
+    }
+    
+    // Initialize faculty timetables if they don't exist
+    if (!localStorage.getItem("facultyTimetables")) {
+      localStorage.setItem("facultyTimetables", JSON.stringify(initializeMockTimetables()));
+    }
+  }, []);
+
   // Load user data from localStorage on initial render
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -72,7 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function to authenticate users
   const login = async (email: string, password: string) => {
     // Check if it's the admin
-    if (email === adminUser.email) {
+    if (email === adminUser.email && password === "admin123") {
       setUser(adminUser);
       setIsAuthenticated(true);
       localStorage.setItem("currentUser", JSON.stringify(adminUser));
@@ -85,6 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const foundUser = registeredUsers.find(user => user.email === email);
 
     if (foundUser) {
+      // For the demo, we'll accept any password for faculty users
       setUser(foundUser);
       setIsAuthenticated(true);
       localStorage.setItem("currentUser", JSON.stringify(foundUser));
@@ -104,6 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         description: "Invalid email or password",
         variant: "destructive",
       });
+      throw new Error("Invalid email or password");
     }
   };
 
