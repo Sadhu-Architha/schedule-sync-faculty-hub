@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/use-toast";
-import { checkScheduleConflicts } from "@/utils/timetableGenerator";
+import { checkScheduleConflicts, autoResolveConflicts } from "@/utils/timetableGenerator";
 import { mockFaculty } from "@/utils/mockData";
 import { ArrowLeft } from "lucide-react";
 
