@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -71,9 +70,10 @@ const Login = () => {
                   className="border-blue-200"
                 />
               </div>
-              <div className="text-sm text-gray-500">
-                <p>Admin Email: admin@university.edu</p>
-                <p>Password: any password will work for admin</p>
+              <div className="text-sm space-y-1 p-3 bg-blue-50 rounded-md">
+                <p className="font-medium text-blue-700">Admin Credentials:</p>
+                <p className="text-gray-600">Email: admin@university.edu</p>
+                <p className="text-gray-600">Password: admin123</p>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">

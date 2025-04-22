@@ -70,48 +70,48 @@ export const subjectsByDepartment = {
 export const mockFaculty = [
   {
     id: "faculty-1",
-    name: "Dr. John Smith",
-    email: "john.smith@university.edu",
+    name: "Dr. Rajesh Kumar",
+    email: "rajesh.kumar@university.edu",
     role: "faculty",
     department: "Computer Science",
     specialization: "Artificial Intelligence"
   },
   {
     id: "faculty-2",
-    name: "Dr. Emily Johnson",
-    email: "emily.johnson@university.edu",
+    name: "Dr. Priya Sharma",
+    email: "priya.sharma@university.edu",
     role: "faculty",
     department: "Electrical Engineering",
     specialization: "Power Systems"
   },
   {
     id: "faculty-3",
-    name: "Dr. Michael Chen",
-    email: "michael.chen@university.edu",
+    name: "Dr. Amit Patel",
+    email: "amit.patel@university.edu",
     role: "faculty",
     department: "Electronics",
     specialization: "VLSI Design"
   },
   {
     id: "faculty-4",
-    name: "Dr. Sarah Williams",
-    email: "sarah.williams@university.edu",
+    name: "Dr. Meera Gupta",
+    email: "meera.gupta@university.edu",
     role: "faculty",
     department: "Civil Engineering",
     specialization: "Structural Engineering"
   },
   {
     id: "faculty-5",
-    name: "Dr. James Wilson",
-    email: "james.wilson@university.edu",
+    name: "Dr. Suresh Verma",
+    email: "suresh.verma@university.edu",
     role: "faculty",
     department: "Mechanical Engineering",
     specialization: "Thermodynamics"
   },
   {
     id: "faculty-6",
-    name: "Dr. Lisa Kumar",
-    email: "lisa.kumar@university.edu",
+    name: "Dr. Anita Desai",
+    email: "anita.desai@university.edu",
     role: "faculty",
     department: "Information Technology",
     specialization: "Cybersecurity"

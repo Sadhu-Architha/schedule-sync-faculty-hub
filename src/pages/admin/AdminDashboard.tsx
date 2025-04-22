@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -9,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MessageSquare } from "lucide-react";
 import { mockFaculty, initializeMockTimetables, initializeMessageSystem } from "@/utils/mockData";
 
-// User icon component for this file only
 const User = ({ className }: { className?: string }): JSX.Element => {
   return (
     <svg 
@@ -43,24 +41,19 @@ const AdminDashboard = () => {
   const [registeredFaculty, setRegisteredFaculty] = useState<Faculty[]>([]);
   const [messageCount, setMessageCount] = useState(0);
 
-  // Initialize data if not present
   useEffect(() => {
-    // Check if mock faculty timetables are initialized
     if (!localStorage.getItem("facultyTimetables")) {
       localStorage.setItem("facultyTimetables", JSON.stringify(initializeMockTimetables()));
     }
     
-    // Check if message system is initialized
     if (!localStorage.getItem("messageSystem")) {
       localStorage.setItem("messageSystem", JSON.stringify(initializeMessageSystem()));
     }
     
-    // Get registered faculty members
     const storedUsers = localStorage.getItem("registeredUsers");
     const users = storedUsers ? JSON.parse(storedUsers) : [];
     setRegisteredFaculty(users);
     
-    // Count unread messages
     const messageSystem = JSON.parse(localStorage.getItem("messageSystem") || "{}");
     const unreadCount = (messageSystem.messages || []).filter((msg: any) => !msg.read).length;
     setMessageCount(unreadCount);
@@ -76,7 +69,6 @@ const AdminDashboard = () => {
 
   const allFaculty = [...mockFaculty, ...registeredFaculty];
   
-  // Stats calculations
   const totalClasses = 9 * allFaculty.length;
   const deptStats = allFaculty.reduce((acc: Record<string, number>, faculty) => {
     acc[faculty.department] = (acc[faculty.department] || 0) + 1;
@@ -213,11 +205,9 @@ const AdminDashboard = () => {
                           <td className="px-4 py-3 border-t">{faculty.department}</td>
                           <td className="px-4 py-3 border-t">{faculty.specialization}</td>
                           <td className="px-4 py-3 border-t">
-                            {mockFaculty.some(f => f.id === faculty.id) ? (
-                              <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Default</Badge>
-                            ) : (
-                              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">New Registration</Badge>
-                            )}
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+                              Registered
+                            </Badge>
                           </td>
                         </tr>
                       ))}
